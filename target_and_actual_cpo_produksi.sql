@@ -1,0 +1,577 @@
+-- create table
+--create table target_and_actual_cpo_produksi (
+--	id serial4 primary key,
+--	type varchar,
+--	tahun varchar,
+--	januari float8,
+--	februari float8,
+--	maret float8,
+--	april float8,
+--	mei float8,
+--	juni float8,
+--	juli float8,
+--	agustus float8,
+--	september float8,
+--	oktober float8,
+--	november float8,
+--	desember float8
+--);
+
+-- insert target
+--INSERT INTO target_and_actual_cpo_produksi (
+--	type,
+--	tahun,
+--	januari,
+--	februari,
+--	maret,
+--	april,
+--	mei,
+--	juni,
+--	juli,
+--	agustus,
+--	september,
+--	oktober,
+--	november,
+--	desember
+--)
+--select 
+--	'target' as type,
+--	hmtoait.year as year,
+--	hmtoaitpl.target_januari as januari,
+--	hmtoaitpl.target_febuari  as februari,
+--	hmtoaitpl.target_maret  as maret,
+--	hmtoaitpl.target_april  as april,
+--	hmtoaitpl.target_mei  as mei,
+--	hmtoaitpl.target_juni  as juni,
+--	hmtoaitpl.target_juli  as juli,
+--	hmtoaitpl.target_agustus  as agustus,
+--	hmtoaitpl.target_september  as september,
+--	hmtoaitpl.target_oktober  as oktober,
+--	hmtoaitpl.target_november  as november,
+--	hmtoaitpl.target_desember  as desember
+--from 
+--	hit_mill_target_olah_after_import_to hmtoait
+--left join
+--	hit_mill_target_olah_after_import_to_produksi_line hmtoaitpl on hmtoaitpl.import_to_id = hmtoait.id
+--where
+--	hmtoaitpl.target like 'Produksi  CPO / Bulan / Kg'
+--and
+--not exists 
+--	(select type, tahun from target_and_actual_cpo_produksi where type like 'target' and tahun = hmtoait.year);
+	
+-- insert actual
+--INSERT INTO target_and_actual_cpo_produksi (
+--	type,
+--	tahun,
+--	januari,
+--	februari,
+--	maret,
+--	april,
+--	mei,
+--	juni,
+--	juli,
+--	agustus,
+--	september,
+--	oktober,
+--	november,
+--	desember
+--)
+--select
+--	'actual' as type,
+--	tahun,
+--	sum(januari) as januari,
+--	sum(februari) as februari,
+--	sum(maret) as maret,
+--	sum(april) as april,
+--	sum(mei) as mei,
+--	sum(juni) as juni,
+--	sum(juli) as juli,
+--	sum(agustus) as agustus,
+--	sum(september) as september,
+--	sum(oktober) as oktober,
+--	sum(november) as november,
+--	sum(desember) as desember
+--from(
+--	select
+--		EXTRACT(YEAR FROM hmdp.datetime_production)::text as tahun,
+--		case
+--			when EXTRACT(MONTH FROM hmdp.datetime_production) = 1 then sum(hmdpcl.daily)
+--		end as januari,
+--		0 as februari,
+--		0 as maret,
+--		0 as april,
+--		0 as mei,
+--		0 as juni,
+--		0 as juli,
+--		0 as agustus,
+--		0 as september,
+--		0 as oktober,
+--		0 as november,
+--		0 as desember
+--	from
+--		hit_mill_dailyreport_produksi hmdp
+--	left join
+--		hit_mill_dailyreport_produksi_cpo_line hmdpcl on hmdpcl.produksi_id = hmdp.id
+--	where
+--		hmdpcl.uraian like 'Total Produksi CPO'
+--	group by 
+--		EXTRACT(YEAR FROM hmdp.datetime_production),
+--		EXTRACT(MONTH FROM hmdp.datetime_production)
+--	union all
+--	select
+--		EXTRACT(YEAR FROM hmdp.datetime_production)::text as tahun,
+--		0 as januari,
+--		case
+--			when EXTRACT(MONTH FROM hmdp.datetime_production) = 2 then sum(hmdpcl.daily)
+--		end as februari,
+--		0 as maret,
+--		0 as april,
+--		0 as mei,
+--		0 as juni,
+--		0 as juli,
+--		0 as agustus,
+--		0 as september,
+--		0 as oktober,
+--		0 as november,
+--		0 as desember
+--	from
+--		hit_mill_dailyreport_produksi hmdp
+--	left join
+--		hit_mill_dailyreport_produksi_cpo_line hmdpcl on hmdpcl.produksi_id = hmdp.id
+--	where
+--		hmdpcl.uraian like 'Total Produksi CPO'
+--	group by 
+--		EXTRACT(YEAR FROM hmdp.datetime_production),
+--		EXTRACT(MONTH FROM hmdp.datetime_production)
+--	union all
+--	select
+--		EXTRACT(YEAR FROM hmdp.datetime_production)::text as tahun,
+--		0 as januari,
+--		0 as februari,
+--		case
+--			when EXTRACT(MONTH FROM hmdp.datetime_production) = 3 then sum(hmdpcl.daily)
+--		end as maret,
+--		0 as april,
+--		0 as mei,
+--		0 as juni,
+--		0 as juli,
+--		0 as agustus,
+--		0 as september,
+--		0 as oktober,
+--		0 as november,
+--		0 as desember
+--	from
+--		hit_mill_dailyreport_produksi hmdp
+--	left join
+--		hit_mill_dailyreport_produksi_cpo_line hmdpcl on hmdpcl.produksi_id = hmdp.id
+--	where
+--		hmdpcl.uraian like 'Total Produksi CPO'
+--	group by 
+--		EXTRACT(YEAR FROM hmdp.datetime_production),
+--		EXTRACT(MONTH FROM hmdp.datetime_production)
+--	union all
+--	select
+--		EXTRACT(YEAR FROM hmdp.datetime_production)::text as tahun,
+--		0 as januari,
+--		0 as februari,
+--		0 as maret,
+--		case
+--			when EXTRACT(MONTH FROM hmdp.datetime_production) = 4 then sum(hmdpcl.daily)
+--		end as april,
+--		0 as mei,
+--		0 as juni,
+--		0 as juli,
+--		0 as agustus,
+--		0 as september,
+--		0 as oktober,
+--		0 as november,
+--		0 as desember
+--	from
+--		hit_mill_dailyreport_produksi hmdp
+--	left join
+--		hit_mill_dailyreport_produksi_cpo_line hmdpcl on hmdpcl.produksi_id = hmdp.id
+--	where
+--		hmdpcl.uraian like 'Total Produksi CPO'
+--	group by 
+--		EXTRACT(YEAR FROM hmdp.datetime_production),
+--		EXTRACT(MONTH FROM hmdp.datetime_production)
+--	union all
+--	select
+--		EXTRACT(YEAR FROM hmdp.datetime_production)::text as tahun,
+--		0 as januari,
+--		0 as februari,
+--		0 as maret,
+--		0 as april,
+--		case
+--			when EXTRACT(MONTH FROM hmdp.datetime_production) = 5 then sum(hmdpcl.daily)
+--		end as mei,
+--		0 as juni,
+--		0 as juli,
+--		0 as agustus,
+--		0 as september,
+--		0 as oktober,
+--		0 as november,
+--		0 as desember
+--	from
+--		hit_mill_dailyreport_produksi hmdp
+--	left join
+--		hit_mill_dailyreport_produksi_cpo_line hmdpcl on hmdpcl.produksi_id = hmdp.id
+--	where
+--		hmdpcl.uraian like 'Total Produksi CPO'
+--	group by 
+--		EXTRACT(YEAR FROM hmdp.datetime_production),
+--		EXTRACT(MONTH FROM hmdp.datetime_production)
+--	union all
+--	select
+--		EXTRACT(YEAR FROM hmdp.datetime_production)::text as tahun,
+--		0 as januari,
+--		0 as februari,
+--		0 as maret,
+--		0 as april,
+--		0 as mei,
+--		case
+--			when EXTRACT(MONTH FROM hmdp.datetime_production) = 6 then sum(hmdpcl.daily)
+--		end as juni,
+--		0 as juli,
+--		0 as agustus,
+--		0 as september,
+--		0 as oktober,
+--		0 as november,
+--		0 as desember
+--	from
+--		hit_mill_dailyreport_produksi hmdp
+--	left join
+--		hit_mill_dailyreport_produksi_cpo_line hmdpcl on hmdpcl.produksi_id = hmdp.id
+--	where
+--		hmdpcl.uraian like 'Total Produksi CPO'
+--	group by 
+--		EXTRACT(YEAR FROM hmdp.datetime_production),
+--		EXTRACT(MONTH FROM hmdp.datetime_production)
+--	union all
+--	select
+--		EXTRACT(YEAR FROM hmdp.datetime_production)::text as tahun,
+--		0 as januari,
+--		0 as februari,
+--		0 as maret,
+--		0 as april,
+--		0 as mei,
+--		0 as juni,
+--		case
+--			when EXTRACT(MONTH FROM hmdp.datetime_production) = 7 then sum(hmdpcl.daily)
+--		end as juli,
+--		0 as agustus,
+--		0 as september,
+--		0 as oktober,
+--		0 as november,
+--		0 as desember
+--	from
+--		hit_mill_dailyreport_produksi hmdp
+--	left join
+--		hit_mill_dailyreport_produksi_cpo_line hmdpcl on hmdpcl.produksi_id = hmdp.id
+--	where
+--		hmdpcl.uraian like 'Total Produksi CPO'
+--	group by 
+--		EXTRACT(YEAR FROM hmdp.datetime_production),
+--		EXTRACT(MONTH FROM hmdp.datetime_production)
+--	union all
+--	select
+--		EXTRACT(YEAR FROM hmdp.datetime_production)::text as tahun,
+--		0 as januari,
+--		0 as februari,
+--		0 as maret,
+--		0 as april,
+--		0 as mei,
+--		0 as juni,
+--		0 as juli,
+--		case
+--			when EXTRACT(MONTH FROM hmdp.datetime_production) = 8 then sum(hmdpcl.daily)
+--		end as agustus,
+--		0 as september,
+--		0 as oktober,
+--		0 as november,
+--		0 as desember
+--	from
+--		hit_mill_dailyreport_produksi hmdp
+--	left join
+--		hit_mill_dailyreport_produksi_cpo_line hmdpcl on hmdpcl.produksi_id = hmdp.id
+--	where
+--		hmdpcl.uraian like 'Total Produksi CPO'
+--	group by 
+--		EXTRACT(YEAR FROM hmdp.datetime_production),
+--		EXTRACT(MONTH FROM hmdp.datetime_production)
+--	union all
+--	select
+--		EXTRACT(YEAR FROM hmdp.datetime_production)::text as tahun,
+--		0 as januari,
+--		0 as februari,
+--		0 as maret,
+--		0 as april,
+--		0 as mei,
+--		0 as juni,
+--		0 as juli,
+--		0 as agustus,
+--		case
+--			when EXTRACT(MONTH FROM hmdp.datetime_production) = 9 then sum(hmdpcl.daily)
+--		end as september,
+--		0 as oktober,
+--		0 as november,
+--		0 as desember
+--	from
+--		hit_mill_dailyreport_produksi hmdp
+--	left join
+--		hit_mill_dailyreport_produksi_cpo_line hmdpcl on hmdpcl.produksi_id = hmdp.id
+--	where
+--		hmdpcl.uraian like 'Total Produksi CPO'
+--	group by 
+--		EXTRACT(YEAR FROM hmdp.datetime_production),
+--		EXTRACT(MONTH FROM hmdp.datetime_production)
+--	union all
+--	select
+--		EXTRACT(YEAR FROM hmdp.datetime_production)::text as tahun,
+--		0 as januari,
+--		0 as februari,
+--		0 as maret,
+--		0 as april,
+--		0 as mei,
+--		0 as juni,
+--		0 as juli,
+--		0 as agustus,
+--		0 as september,
+--		case
+--			when EXTRACT(MONTH FROM hmdp.datetime_production) = 10 then sum(hmdpcl.daily)
+--		end as oktober,
+--		0 as november,
+--		0 as desember
+--	from
+--		hit_mill_dailyreport_produksi hmdp
+--	left join
+--		hit_mill_dailyreport_produksi_cpo_line hmdpcl on hmdpcl.produksi_id = hmdp.id
+--	where
+--		hmdpcl.uraian like 'Total Produksi CPO'
+--	group by 
+--		EXTRACT(YEAR FROM hmdp.datetime_production),
+--		EXTRACT(MONTH FROM hmdp.datetime_production)
+--	union all
+--	select
+--		EXTRACT(YEAR FROM hmdp.datetime_production)::text as tahun,
+--		0 as januari,
+--		0 as februari,
+--		0 as maret,
+--		0 as april,
+--		0 as mei,
+--		0 as juni,
+--		0 as juli,
+--		0 as agustus,
+--		0 as september,
+--		0 as oktober,
+--		case
+--			when EXTRACT(MONTH FROM hmdp.datetime_production) = 11 then sum(hmdpcl.daily)
+--		end as november,
+--		0 as desember
+--	from
+--		hit_mill_dailyreport_produksi hmdp
+--	left join
+--		hit_mill_dailyreport_produksi_cpo_line hmdpcl on hmdpcl.produksi_id = hmdp.id
+--	where
+--		hmdpcl.uraian like 'Total Produksi CPO'
+--	group by 
+--		EXTRACT(YEAR FROM hmdp.datetime_production),
+--		EXTRACT(MONTH FROM hmdp.datetime_production)
+--	union all
+--	select
+--		EXTRACT(YEAR FROM hmdp.datetime_production)::text as tahun,
+--		0 as januari,
+--		0 as februari,
+--		0 as maret,
+--		0 as april,
+--		0 as mei,
+--		0 as juni,
+--		0 as juli,
+--		0 as agustus,
+--		0 as september,
+--		0 as oktober,
+--		0 as november,
+--		case
+--			when EXTRACT(MONTH FROM hmdp.datetime_production) = 12 then sum(hmdpcl.daily)
+--		end as desember
+--	from
+--		hit_mill_dailyreport_produksi hmdp
+--	left join
+--		hit_mill_dailyreport_produksi_cpo_line hmdpcl on hmdpcl.produksi_id = hmdp.id
+--	where
+--		hmdpcl.uraian like 'Total Produksi CPO'
+--	group by 
+--		EXTRACT(YEAR FROM hmdp.datetime_production),
+--		EXTRACT(MONTH FROM hmdp.datetime_production)
+--) as combined_data
+--where 
+--not exists 
+--	(select type, tahun from target_and_actual_cpo_produksi where type like 'actual' and tahun = tahun)
+--group by tahun
+--order by tahun
+
+-- update actual
+--UPDATE target_and_actual_cpo_produksi taacp 
+--SET
+--    januari = CASE 
+--                    WHEN COALESCE(januari, 0) != 0 THEN 0
+--                    ELSE COALESCE(januari, 0)
+--               END
+--               +
+--               COALESCE((SELECT SUM(hmdpcl.daily) 
+--                         FROM hit_mill_dailyreport_produksi hmdp 
+--                         JOIN hit_mill_dailyreport_produksi_cpo_line hmdpcl 
+--                         ON hmdp.id = hmdpcl.produksi_id
+--                         WHERE hmdpcl.uraian like 'Total Produksi CPO'
+--                         AND EXTRACT(MONTH FROM hmdp.datetime_production) = 1 
+--                         AND EXTRACT(YEAR FROM hmdp.datetime_production)::text = taacp.tahun 
+--                         ), 0),
+--    februari = CASE 
+--                    WHEN COALESCE(februari, 0) != 0 THEN 0
+--                    ELSE COALESCE(februari, 0)
+--               END
+--               +
+--               COALESCE((SELECT SUM(hmdpcl.daily) 
+--                         FROM hit_mill_dailyreport_produksi hmdp 
+--                         JOIN hit_mill_dailyreport_produksi_cpo_line hmdpcl 
+--                         ON hmdp.id = hmdpcl.produksi_id
+--                         WHERE hmdpcl.uraian like 'Total Produksi CPO'
+--                         AND EXTRACT(MONTH FROM hmdp.datetime_production) = 2 
+--                         AND EXTRACT(YEAR FROM hmdp.datetime_production)::text = taacp.tahun 
+--                         ), 0),
+--    maret = CASE 
+--                    WHEN COALESCE(maret, 0) != 0 THEN 0
+--                    ELSE COALESCE(maret, 0)
+--               END
+--               +
+--               COALESCE((SELECT SUM(hmdpcl.daily) 
+--                         FROM hit_mill_dailyreport_produksi hmdp 
+--                         JOIN hit_mill_dailyreport_produksi_cpo_line hmdpcl 
+--                         ON hmdp.id = hmdpcl.produksi_id
+--                         WHERE hmdpcl.uraian like 'Total Produksi CPO'
+--                         AND EXTRACT(MONTH FROM hmdp.datetime_production) = 3 
+--                         AND EXTRACT(YEAR FROM hmdp.datetime_production)::text = taacp.tahun 
+--                         ), 0),
+--    april = CASE 
+--                    WHEN COALESCE(april, 0) != 0 THEN 0
+--                    ELSE COALESCE(april, 0)
+--               END
+--               +
+--               COALESCE((SELECT SUM(hmdpcl.daily) 
+--                         FROM hit_mill_dailyreport_produksi hmdp 
+--                         JOIN hit_mill_dailyreport_produksi_cpo_line hmdpcl 
+--                         ON hmdp.id = hmdpcl.produksi_id
+--                         WHERE hmdpcl.uraian like 'Total Produksi CPO'
+--                         AND EXTRACT(MONTH FROM hmdp.datetime_production) = 4 
+--                         AND EXTRACT(YEAR FROM hmdp.datetime_production)::text = taacp.tahun 
+--                         ), 0),
+--	mei = CASE 
+--                    WHEN COALESCE(mei, 0) != 0 THEN 0
+--                    ELSE COALESCE(mei, 0)
+--               END
+--               +
+--               COALESCE((SELECT SUM(hmdpcl.daily) 
+--                         FROM hit_mill_dailyreport_produksi hmdp 
+--                         JOIN hit_mill_dailyreport_produksi_cpo_line hmdpcl 
+--                         ON hmdp.id = hmdpcl.produksi_id
+--                         WHERE hmdpcl.uraian like 'Total Produksi CPO'
+--                         AND EXTRACT(MONTH FROM hmdp.datetime_production) = 5 
+--                         AND EXTRACT(YEAR FROM hmdp.datetime_production)::text = taacp.tahun 
+--                         ), 0), 
+--	juni = CASE 
+--                    WHEN COALESCE(juni, 0) != 0 THEN 0
+--                    ELSE COALESCE(juni, 0)
+--               END
+--               +
+--               COALESCE((SELECT SUM(hmdpcl.daily) 
+--                         FROM hit_mill_dailyreport_produksi hmdp 
+--                         JOIN hit_mill_dailyreport_produksi_cpo_line hmdpcl 
+--                         ON hmdp.id = hmdpcl.produksi_id
+--                         WHERE hmdpcl.uraian like 'Total Produksi CPO'
+--                         AND EXTRACT(MONTH FROM hmdp.datetime_production) = 6 
+--                         AND EXTRACT(YEAR FROM hmdp.datetime_production)::text = taacp.tahun 
+--                         ), 0),                                            
+--	juli = CASE 
+--                    WHEN COALESCE(juli, 0) != 0 THEN 0
+--                    ELSE COALESCE(juli, 0)
+--               END
+--               +
+--               COALESCE((SELECT SUM(hmdpcl.daily) 
+--                         FROM hit_mill_dailyreport_produksi hmdp 
+--                         JOIN hit_mill_dailyreport_produksi_cpo_line hmdpcl 
+--                         ON hmdp.id = hmdpcl.produksi_id
+--                         WHERE hmdpcl.uraian like 'Total Produksi CPO'
+--                         AND EXTRACT(MONTH FROM hmdp.datetime_production) = 7 
+--                         AND EXTRACT(YEAR FROM hmdp.datetime_production)::text = taacp.tahun 
+--                         ), 0),                                            
+--	agustus = CASE 
+--                    WHEN COALESCE(agustus, 0) != 0 THEN 0
+--                    ELSE COALESCE(agustus, 0)
+--               END
+--               +
+--               COALESCE((SELECT SUM(hmdpcl.daily) 
+--                         FROM hit_mill_dailyreport_produksi hmdp 
+--                         JOIN hit_mill_dailyreport_produksi_cpo_line hmdpcl 
+--                         ON hmdp.id = hmdpcl.produksi_id
+--                         WHERE hmdpcl.uraian like 'Total Produksi CPO'
+--                         AND EXTRACT(MONTH FROM hmdp.datetime_production) = 8 
+--                         AND EXTRACT(YEAR FROM hmdp.datetime_production)::text = taacp.tahun 
+--                         ), 0),   
+--	september = CASE 
+--                    WHEN COALESCE(september, 0) != 0 THEN 0
+--                    ELSE COALESCE(september, 0)
+--               END
+--               +
+--               COALESCE((SELECT SUM(hmdpcl.daily) 
+--                         FROM hit_mill_dailyreport_produksi hmdp 
+--                         JOIN hit_mill_dailyreport_produksi_cpo_line hmdpcl 
+--                         ON hmdp.id = hmdpcl.produksi_id
+--                         WHERE hmdpcl.uraian like 'Total Produksi CPO'
+--                         AND EXTRACT(MONTH FROM hmdp.datetime_production) = 9 
+--                         AND EXTRACT(YEAR FROM hmdp.datetime_production)::text = taacp.tahun 
+--                         ), 0),                         
+--	oktober = CASE 
+--                    WHEN COALESCE(oktober, 0) != 0 THEN 0
+--                    ELSE COALESCE(oktober, 0)
+--               END
+--               +
+--               COALESCE((SELECT SUM(hmdpcl.daily) 
+--                         FROM hit_mill_dailyreport_produksi hmdp 
+--                         JOIN hit_mill_dailyreport_produksi_cpo_line hmdpcl 
+--                         ON hmdp.id = hmdpcl.produksi_id
+--                         WHERE hmdpcl.uraian like 'Total Produksi CPO'
+--                         AND EXTRACT(MONTH FROM hmdp.datetime_production) = 10 
+--                         AND EXTRACT(YEAR FROM hmdp.datetime_production)::text = taacp.tahun 
+--                         ), 0),     
+--	november = CASE 
+--                    WHEN COALESCE(november, 0) != 0 THEN 0
+--                    ELSE COALESCE(november, 0)
+--               END
+--               +
+--               COALESCE((SELECT SUM(hmdpcl.daily) 
+--                         FROM hit_mill_dailyreport_produksi hmdp 
+--                         JOIN hit_mill_dailyreport_produksi_cpo_line hmdpcl 
+--                         ON hmdp.id = hmdpcl.produksi_id
+--                         WHERE hmdpcl.uraian like 'Total Produksi CPO'
+--                         AND EXTRACT(MONTH FROM hmdp.datetime_production) = 11 
+--                         AND EXTRACT(YEAR FROM hmdp.datetime_production)::text = taacp.tahun 
+--                         ), 0),                        
+--	desember = CASE 
+--                    WHEN COALESCE(desember, 0) != 0 THEN 0
+--                    ELSE COALESCE(desember, 0)
+--               END
+--               +
+--               COALESCE((SELECT SUM(hmdpcl.daily) 
+--                         FROM hit_mill_dailyreport_produksi hmdp 
+--                         JOIN hit_mill_dailyreport_produksi_cpo_line hmdpcl 
+--                         ON hmdp.id = hmdpcl.produksi_id
+--                         WHERE hmdpcl.uraian like 'Total Produksi CPO'
+--                         AND EXTRACT(MONTH FROM hmdp.datetime_production) = 12 
+--                         AND EXTRACT(YEAR FROM hmdp.datetime_production)::text = taacp.tahun 
+--                         ), 0)                                      
+--FROM 
+--    hit_mill_dailyreport_produksi hmdp
+--LEFT JOIN
+--    hit_mill_dailyreport_produksi_cpo_line hmdpcl ON hmdp.id = hmdpcl.produksi_id
+--WHERE 
+--    taacp.type LIKE 'actual' AND EXTRACT(YEAR FROM hmdp.datetime_production)::text = taacp.tahun;
