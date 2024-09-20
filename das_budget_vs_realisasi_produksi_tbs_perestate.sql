@@ -44,8 +44,10 @@ AS WITH bprod AS (
                      LEFT JOIN schema_gbs_replica.weighbridge_ticket_raw raw ON raw.weighbridge_ticket_id = wb.id
                      LEFT JOIN schema_gbs_replica.plantation_division div ON div.id = wb.plantation_division_id
                      LEFT JOIN schema_gbs_replica.plantation_estate est ON est.id = div.estate_id
-                  WHERE wb.transaction_type_id = 86 AND (wb.state::text = ANY (ARRAY['valid'::text, 'generate_tbs_journal'::text])) AND raw.status_delete::text = '0'::text AND wb.date_in <= (( SELECT dash_last_update.last_update
-                           FROM dash_last_update))
+                  WHERE wb.transaction_type_id = 86 AND (wb.state::text = ANY (ARRAY['valid'::text, 'generate_tbs_journal'::text]))
+                     AND ((TO_CHAR(wb.date_in,'YYYYMM') = '202401')
+		          OR (TO_CHAR(wb.date_in,'YYYYMM') <> '202401' AND raw.status_delete::text = '0'::text))
+                     AND wb.date_in <= (( SELECT dash_last_update.last_update FROM dash_last_update))
                 )
          SELECT ap.tahun,
             ap.bulan,
