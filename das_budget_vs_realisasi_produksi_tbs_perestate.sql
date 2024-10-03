@@ -184,3 +184,17 @@ ORDER BY
       2
     )
   );
+
+SELECT
+ 	wb.*
+FROM 
+ 	weighbridge_ticket wb 
+	LEFT JOIN weighbridge_ticket_raw raw ON raw.weighbridge_ticket_id = wb.id 
+	LEFT JOIN plantation_division div ON div.id = wb.plantation_division_id 
+	LEFT JOIN plantation_estate est ON est.id = div.estate_id 
+WHERE 
+	wb.transaction_type_id = 86
+	AND TO_CHAR(wb.date_in,'YYYYMM') = '202403'
+	AND wb.state = 'valid'
+	AND raw.status_delete = '0'
+
